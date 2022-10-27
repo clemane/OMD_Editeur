@@ -10,6 +10,6 @@ Listes des commandes :
 * Coller --> ENTREE
 * Couper --> ALT
 
-## V2_Editeur_de_Texte
+## V2_Editeur_de_Texte JTextArea
 
 Nous avons aussi réalisé cette editeur à l'aide de la librairie JTextArea qui permet d'avoir un editeur plus propre avec des commandes plus facile à éxécuter.
