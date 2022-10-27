@@ -1,4 +1,4 @@
-package editeur_de_text;
+package editeur_de_textV1;
 import java.awt.*;
 import javax.swing.*;
 import java.util.*;
@@ -15,12 +15,13 @@ public class editeur extends JFrame implements ActionListener, KeyListener {
   
       public JLabel text;
   
-      //Booleen pour savoir si on est en mode selection ou non
+      //Etat Selection ou Ecriture
       public Boolean selection;
   
       //Commandes
       public Copier copier;
       public Coller coller;
+      public Couper couper;
   
       public editeur() {
           //Initialisation de la fenetre
@@ -35,19 +36,17 @@ public class editeur extends JFrame implements ActionListener, KeyListener {
           //Initialisation du Buffer
           buffer = new Buffer(text);
   
-          //a la base on est pas en mode selection
+          //Commence en écriture
           selection = false;
   
           //Creation de la barre de menu
           JMenuBar mb = new JMenuBar();
   
-          //Creaton du menu
           JMenu menu = new JMenu("Editeur de texte");
-  
           //Creation des boutons du menu
           JMenuItem copy = new JMenuItem("copy = CTRL");
           JMenuItem paste = new JMenuItem("paste = ENTREE");
-          JMenuItem cut = new JMenuItem("cut = ");
+          JMenuItem cut = new JMenuItem("cut = ALT");
   
           //Ajout des boutons au menu
           menu.add(copy);
@@ -61,13 +60,11 @@ public class editeur extends JFrame implements ActionListener, KeyListener {
           //Creation des commandes
           copier = new Copier(buffer);
           coller = new Coller(buffer);
+          couper = new Couper(buffer);
   
-          //Ajout du menu a la barre de menu
+          
           mb.add(menu);
-  
-          //Ajout de la barre de menu a la fenetre
           fenetre.setJMenuBar(mb);
-  
           //Initialisation de la fenetre
           fenetre.add(text);
           fenetre.setSize(600, 600);
@@ -78,28 +75,26 @@ public class editeur extends JFrame implements ActionListener, KeyListener {
   
       @Override
       /**
-       * Fonction qui entre en jeu si une touche du clavier est appuyee
+       * Permet de récuperer chaque touche appuyé par l'utilisateur
        */
       public void keyPressed(KeyEvent arg0) {
-          //applique la fonction retirer un caractere si on appuie sur la touche BACK_SPACE
+          //supprime un  caractère lors de l'appui de BACK_SPACE
           if (arg0.getKeyCode() == 8) {
               buffer.remove();
           }
-          //On active ou desactive le mode de selction si on appuie sur la touche MAJ
+          //Active desactive selection ou ecriture avec MAJ
           else if (arg0.getKeyCode() == 16) {
               if (selection) {
                   selection = false;
-                  //On change aussi l'etat du buffer
                   buffer.setEtat(false);
                   System.out.println("Selection désactivée");
               } else {
                   selection = true;
-                  //On change aussi l'etat du buffer
                   buffer.setEtat(true);
                   System.out.println("Selection activée");
               }
           }
-          //si on appuie sur la fleche de droite et qu'on est en mode selection on etend la selection, sinon on deplace le curseur 
+          //Si Selection alors on étend la sélection sinon on bouge le curseur
           else if (arg0.getKeyCode() == 39) {
               if (selection) {
                   buffer.selectionDroit();
@@ -107,7 +102,7 @@ public class editeur extends JFrame implements ActionListener, KeyListener {
                   buffer.positionDroit();
               }
           }
-          //fleche de gauche et qu'on est en mode s 
+          //Si Selection on réduit la sélection sinon on bouge le curseur
           else if (arg0.getKeyCode() == 37) {
               if (selection) {
                   buffer.selectionGauche();
@@ -115,19 +110,23 @@ public class editeur extends JFrame implements ActionListener, KeyListener {
                   buffer.positionGauche();
               }
           }
-          //CTRL
+          //CTRL -- Copie
           else if(arg0.getKeyCode() == 17){
               copier.execute();
           }
-          //Apuie sur Entree
+          //Appuie sur Entree -- Coller
           else if(arg0.getKeyCode() == 10){
               coller.execute();
+          }
+          //Appuie sur ALT -- Couper
+          else if(arg0.getKeyCode() == 18){
+                couper.execute();
           }
           //On ajoute la saisie dans le buffer
           else {
               buffer.add(String.valueOf(arg0.getKeyChar()),buffer.getPosition());
           }
-          //On update la mise a jour du buffer
+          //On update le buffer
           buffer.update();
   
       }
