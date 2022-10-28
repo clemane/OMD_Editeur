@@ -1,2 +1,0 @@
-## Editeur de texte JLabel
-
